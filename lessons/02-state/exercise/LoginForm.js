@@ -8,6 +8,20 @@ import { login } from "app/utils"
 // export default LoginFormFinal
 
 export default function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false)
+  const handleShowPassword = () => setShowPassword(!showPassword)
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const handleSubmit = event => {
+    event.preventDefault()
+    setLoading(true)
+    const [emailNode, passwordNode] = event.target.elements
+    login(emailNode.value, passwordNode.value).catch(error => {
+      console.log(error.message)
+      setLoading(false)
+      setError(error)
+    })}
   return (
     <form>
       <VisuallyHidden>
