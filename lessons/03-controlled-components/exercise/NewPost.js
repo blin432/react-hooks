@@ -11,10 +11,16 @@ const MAX_MESSAGE_LENGTH = 200
 
 export default function NewPost({ takeFocus, date, onSuccess, showAvatar }) {
   const [{ auth }] = useAppState()
+  const [message, setMessage] = useState("Ran around the lake.")
+  const messageTooLong = message.length > MAX_MESSAGE_LENGTH
+
+  const handleMessageChange = event => {
+    setMessage(event.target.value)
+  }
 
   return (
-    <div className="NewPost">
-      {showAvatar && <Avatar uid={auth.uid} size={70} />}
+<div className={"NewPost" + (messageTooLong ? ` ${errorClass}` : "")}>
+        {showAvatar && <Avatar uid={auth.uid} size={70} />}
       <form className="NewPost_form">
         <textarea
           className="NewPost_input"

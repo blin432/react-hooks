@@ -37,6 +37,7 @@ export default function NewPost({ takeFocus, date, onSuccess, showAvatar }) {
             setMessage(message)
           }}
         />
+        <RecentPostsDropdown uid={auth.uid} onSelect={(message) => {}}/>
         <div className="NewPost_buttons">
           <Minutes date={date} />
           <div>

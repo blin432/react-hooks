@@ -18,6 +18,12 @@ export default function NewPost({ takeFocus, date, onSuccess, showAvatar }) {
     setMessage(event.target.value)
   }
 
+  useEffect(() => {
+    setLocalStorage(storageKey, message)
+  }, [storageKey, message])
+
+  const messageRef = useRef()
+  
   return (
     <div className={'NewPost' + (messageTooLong ? ' NewPost_error' : '')}>
       {showAvatar && <Avatar uid={auth.uid} size={70} />}
