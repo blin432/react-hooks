@@ -1,23 +1,18 @@
 import React, { Fragment, useContext, createContext } from "react"
 
 import { daysInMonth } from "app/utils"
+const DateFieldsContext = createContext()
 
 export default function DateFields({
   children,
   defaultValue,
-  start,
-  end,
   value: controlledValue,
   onChange
 }) {
   const date = controlledValue || defaultValue
-  return (
-    <Fragment>
-      <MonthField date={date} onChange={onChange} />/
-      <DayField date={date} onChange={onChange} />/
-      <YearField date={date} onChange={onChange} start={start} end={end} />
-    </Fragment>
-  )
+  const context = { date, onChange }
+  return 
+    return <DateFieldsContext.Provider value={context} children={children} />
 }
 
 export function DayField(props) {
