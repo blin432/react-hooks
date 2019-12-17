@@ -23,12 +23,42 @@ function Feed() {
   )
 }
 
-// you can delete this
-const fakePost = {
-  createdAt: Date.now() - 10000,
-  date: "2019-03-30",
-  message: "Went for a run",
-  minutes: 45,
-  uid: "0BrC0fB6r2Rb5MNxyQxu5EnYacf2"
-}
+
+const { createdBefore, viewedAll, limit, posts, newPosts } = state
+
+  // helps us know when we've viewed all
+  const lastPostIdRef = useRef()
+
+  useEffect(() => {
+    feedState = state
+  })
+
+  useEffect(() => {
+    let current = true
+    loadFeedPosts(createdBefore, limit).then(posts => {
+      if (current) {
+        dispatch({ type: "LOAD_POSTS", posts })
+      }
+    })
+    return () => current = false
+  }, [createdBefore, limit])
+
+  useEffect(() => {
+    return subscribeToNewFeedPosts(createdBefore, posts => {
+      dispatch({ type: "LOAD_NEW_POSTS", posts })
+    })
+  }, [createdBefore])
+
+  useEffect(() => {
+    if (posts && posts[posts.length - 1].id === lastPostIdRef.current) {
+      dispatch({ type: "VIEWED_ALL" })
+    }
+  }, [posts])
+
+  const handleViewNewPosts = () => dispatch({ type: "VIEW_NEW_POSTS" })
+
+  const handleViewMore = () => {
+    lastPostIdRef.current = posts[posts.length - 1].id
+    dispatch({ type: "VIEW_MORE" })
+  }
 
