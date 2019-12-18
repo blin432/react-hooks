@@ -1,32 +1,47 @@
-import React from "react"
+import React, { useRef, useReducer, useEffect } from "react"
 import FeedPost from "app/FeedPost"
 import { loadFeedPosts, subscribeToNewFeedPosts } from "app/utils"
-// import FeedFinal from './Feed.final'
-// export default FeedFinal
-export default Feed
 
-function Feed() {
-  return (
-    <div className="Feed">
-      <div className="Feed_button_wrapper">
-        <button className="Feed_new_posts_button icon_button">
-          View 3 New Posts
-        </button>
-      </div>
+const PER_PAGE = 3
 
-      <FeedPost post={fakePost} />
+let feedState = null
 
-      <div className="Feed_button_wrapper">
-        <button className="Feed_new_posts_button icon_button">View More</button>
-      </div>
-    </div>
+export default function Feed() {
+  const [state, dispatch] = useReducer(
+    (state, action) => {
+      switch (action.type) {
+        case "LOAD_POSTS":
+          return { ...state, posts: action.posts }
+        case "LOAD_NEW_POSTS":
+          return { ...state, newPosts: action.posts }
+        case "VIEWED_ALL":
+          return { ...state, viewedAll: true }
+        case "VIEW_NEW_POSTS":
+          return {
+            ...state,
+            createdBefore: Date.now(),
+            limit: state.limit + state.newPosts.length,
+            posts: state.newPosts.concat(state.posts),
+            newPosts: []
+          }
+        case "VIEW_MORE":
+          return { ...state, limit: state.limit + PER_PAGE }
+        default: {
+        }
+      }
+    },
+    feedState || {
+      createdBefore: Date.now(),
+      viewedAll: false,
+      limit: PER_PAGE,
+      posts: null,
+      newPosts: []
+    }
   )
-}
+
+  const { createdBefore, viewedAll, limit, posts, newPosts } = state
 
 
-const { createdBefore, viewedAll, limit, posts, newPosts } = state
-
-  // helps us know when we've viewed all
   const lastPostIdRef = useRef()
 
   useEffect(() => {
@@ -62,3 +77,35 @@ const { createdBefore, viewedAll, limit, posts, newPosts } = state
     dispatch({ type: "VIEW_MORE" })
   }
 
+  const hasNewPosts = newPosts.length > 0
+
+  return posts ? (
+    <div className="Feed">
+      {hasNewPosts && (
+        <div className="Feed_button_wrapper">
+          <button
+            className="Feed_new_posts_button icon_button"
+            onClick={handleViewNewPosts}
+          >
+            View {newPosts.length} New Posts
+          </button>
+        </div>
+      )}
+
+      {posts.map(post => (
+        <FeedPost key={post.id} post={post} />
+      ))}
+
+      {!viewedAll && posts && (
+        <div className="Feed_button_wrapper">
+          <button
+            className="Feed_new_posts_button icon_button"
+            onClick={handleViewMore}
+          >
+            View More
+          </button>
+        </div>
+      )}
+    </div>
+  ) : null
+}
