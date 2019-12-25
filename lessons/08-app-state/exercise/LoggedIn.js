@@ -8,13 +8,16 @@ import Dashboard from "app/Dashboard"
 import TopBar from "app/TopBar"
 import User from "app/User"
 import NotFound from "app/NotFound"
+import useAuth from "app/useAuth"
 
 export default function LoggedIn() {
   const [{ user, auth }, dispatch] = useAppState()
-  const user = null
+
   useEffect(() => {
     if (!user) {
       fetchUser(auth.uid).then(user => {
+        // okay to dispatch even if unmounted, might
+        // as well get it into the cache
         dispatch({ type: "LOAD_USER", user })
       })
     }
@@ -50,7 +53,7 @@ export default function LoggedIn() {
         </Router>
       </div>
     </Fragment>
-  ) : <div>No user! Go fix it :D</div>
+  ) : null
 }
 
 const hasValidDateParam = ({ params }) => {

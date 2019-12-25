@@ -4,9 +4,6 @@ import { FaSignInAlt } from "react-icons/fa"
 import TabsButton from "app/TabsButton"
 import { login } from "app/utils"
 
-// import LoginFormFinal from './LoginForm.final'
-// export default LoginFormFinal
-
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const handleShowPassword = () => setShowPassword(!showPassword)
@@ -21,9 +18,19 @@ export default function LoginForm() {
       console.log(error.message)
       setLoading(false)
       setError(error)
-    })}
+    })
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
+      {error && (
+        <div style={{ color: "red" }}>
+          <p>Oops, there was an error logging you in.</p>
+          <p>
+            <i>{error.message}</i>
+          </p>
+        </div>
+      )}
       <VisuallyHidden>
         <label htmlFor="login:email">Email:</label>
       </VisuallyHidden>
@@ -39,7 +46,7 @@ export default function LoginForm() {
       </VisuallyHidden>
       <input
         id="login:password"
-        type="password"
+        type={showPassword ? "text" : "password"}
         className="inputField"
         placeholder="Password"
       />
@@ -47,9 +54,10 @@ export default function LoginForm() {
       <div>
         <label>
           <input
+            onChange={handleShowPassword}
+            defaultChecked={showPassword}
             className="passwordCheckbox"
             type="checkbox"
-            defaultChecked={false}
           />{" "}
           show password
         </label>
@@ -57,7 +65,7 @@ export default function LoginForm() {
 
       <TabsButton>
         <FaSignInAlt />
-        <span>Login</span>
+        <span>{loading ? "Loading..." : "Login"}</span>
       </TabsButton>
     </form>
   )

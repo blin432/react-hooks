@@ -6,36 +6,36 @@ import { subscribeToPosts, fetchPosts } from "app/utils"
 // Let's code along this one together
 // Check out Dashboard.js, it called usePosts but we aren't doing anything yet!
 
-// export default function usePosts(uid) {
-//   return null
-// }
+export default function usePosts(uid) {
+  return null
+}
 
 /******************************************************************************/
 // We've got a `subscribeToPosts(uid, posts => {})` method, what do we do?
 
-// export default function usePosts(uid) {
-//   const [posts, setPosts] = useState(null)
-//   useEffect(() => {
-//     subscribeToPosts(uid, posts => {
-//       setPosts(posts)
-//     })
-//   })
-//   return posts
-// }
+export default function usePosts(uid) {
+  const [posts, setPosts] = useState(null)
+  useEffect(() => {
+    subscribeToPosts(uid, posts => {
+      setPosts(posts)
+    })
+  })
+  return posts
+}
 
 /******************************************************************************/
 // Oops, what did we miss? Unsubscribe (click between Calendar/Feed to trigger
 // the error)
 
-// export default function usePosts(uid) {
-//   const [posts, setPosts] = useState(null)
-//   useEffect(() => {
-//     return subscribeToPosts(uid, posts => {
-//       setPosts(posts)
-//     })
-//   })
-//   return posts
-// }
+export default function usePosts(uid) {
+  const [posts, setPosts] = useState(null)
+  useEffect(() => {
+    return subscribeToPosts(uid, posts => {
+      setPosts(posts)
+    })
+  })
+  return posts
+}
 
 /******************************************************************************/
 // Notice that gross flicker? How can we fix it?
@@ -46,19 +46,19 @@ import { subscribeToPosts, fetchPosts } from "app/utils"
 // Let's go with option 2 cause we just did option 1. Don't forget the second
 // arg to useEffect!
 
-// const cache = {}
+const cache = {}
 
-// export default function usePosts(uid) {
-//   const cached = cache[uid]
-//   const [posts, setPosts] = useState(cached)
-//   useEffect(() => {
-//     return subscribeToPosts(uid, posts => {
-//       cache[uid] = posts
-//       setPosts(posts)
-//     })
-//   }, [uid])
-//   return posts
-// }
+export default function usePosts(uid) {
+  const cached = cache[uid]
+  const [posts, setPosts] = useState(cached)
+  useEffect(() => {
+    return subscribeToPosts(uid, posts => {
+      cache[uid] = posts
+      setPosts(posts)
+    })
+  }, [uid])
+  return posts
+}
 
 /******************************************************************************/
 // Flicker is gone!
